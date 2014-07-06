@@ -1,3 +1,6 @@
+<?php
+/*
+
 Copyright (c) 2014 Agile Technology Engineers Monastery - ATEMON
 
 Git Hub: https://github.com/atemon
@@ -22,3 +25,42 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+class EmailValidator{
+    
+    public function is_valid($email){
+        
+        if(!$email){
+            return false;
+        }
+
+        $parts = explode('@',$email);
+        
+        if(count($parts) != 2){
+            return false;    // Something wrong, you got some mail address like some@email@domain.com
+        }
+        
+        if(!preg_match("/[a-z0-9\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+(?:\.[a-z0-9\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+)*/",$parts[0])){
+            return false;   // RFC allows these characters in email, though most MSPs don't 
+        }
+
+        return $this->valid_mx($parts[1]);   // A valid mail exchange server is configured!
+    }
+
+    public function nslookup_installed() {
+        return (empty(shell_exec("which nslookup")) ? false : true);
+    }
+
+    public function valid_mx($domain){
+        if($this->nslookup_installed()){
+            $rv = shell_exec("nslookup -query=mx $domain");
+            if(preg_match('/mail exchanger/', $rv)){
+                return true;
+            }
+            return false;   
+        }
+        else{
+            return false;
+        }
+    }
+}
