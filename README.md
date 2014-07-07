@@ -12,16 +12,28 @@ To install nslookup, run the command
 # yum install bind-utils
 ```
 ####Ubuntu/Debian
-```
+```sh
 # sudo apt-get update
 # sudo apt-get install dnsutils
 
 ```
 
 ###Usage
-```sh
-require_once 'EmailValidator/emailvalidator.php';
-$validator = new EmailValidator();    
-print $validator->is_valid('vc@skdjfg.com')?'True':'False';
 
+Normal PHP
+
+```php
+require_once 'PHP-EmailValidator/emailvalidator.php';
+$validator = new EmailValidator();    
+print $validator->is_valid('atemon@skdjfg.com')?'True':'False';
+
+```
+
+in CodeIgniter
+
+* copy emailvalidator.php to library folder
+
+```php
+$this->load->library('emailvalidator');
+$this->emailvalidator->is_valid('atemon@skdjfg.com')
 ```
