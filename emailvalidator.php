@@ -33,13 +33,31 @@ class EmailValidator{
         if(!$email){
             return false;
         }
-
+        /*
+        RFC 3696
+        In addition to restrictions on syntax, there is a length limit on email addresses. 
+        That limit is a maximum of 64 characters (octets) in the "local part" (before the "@") 
+        and a maximum of 255 characters (octets) in the domain part (after the "@") for a total 
+        length of 320 characters. However, there is a restriction in RFC 2821 on the length of 
+        an address in MAIL and RCPT commands of 254 characters. Since addresses that do not fit 
+        in those fields are not normally useful, the upper limit on address lengths should 
+        normally be considered to be 254.
+        */
+        if(strlen($email) > 254 ){
+            return false;
+        }
         $parts = explode('@',$email);
         
         if(count($parts) != 2){
             return false;    // Something wrong, you got some mail address like some@email@domain.com
         }
-        
+        if(strlen($parts[0]) > 64 ){
+            return false;
+        }
+        if(strlen($parts[1]) > 255 ){
+            return false;
+        }
+
         if(!preg_match("/[a-z0-9\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+(?:\.[a-z0-9\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+)*/",$parts[0])){
             return false;   // RFC allows these characters in email, though most MSPs don't 
         }
